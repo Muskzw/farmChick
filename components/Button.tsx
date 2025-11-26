@@ -4,9 +4,10 @@ import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 interface ButtonProps extends TouchableOpacityProps {
     variant?: 'primary' | 'secondary' | 'outline';
     label: string;
+    textClassName?: string;
 }
 
-export function Button({ variant = 'primary', label, className, ...props }: ButtonProps) {
+export function Button({ variant = 'primary', label, className, textClassName, ...props }: ButtonProps) {
     const baseStyle = "px-4 py-3 rounded-lg flex items-center justify-center";
     const variants = {
         primary: "bg-primary",
@@ -24,7 +25,7 @@ export function Button({ variant = 'primary', label, className, ...props }: Butt
             className={`${baseStyle} ${variants[variant]} ${className}`}
             {...props}
         >
-            <Text className={textVariants[variant]}>{label}</Text>
+            <Text className={`${textVariants[variant]} ${textClassName}`}>{label}</Text>
         </TouchableOpacity>
     );
 }
