@@ -4,11 +4,11 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
-      colors: {
-        primary: '#2E7D32', // Green for farming
-        secondary: '#F9A825', // Yellow/Orange for chicks
-        accent: '#4E342E', // Brown for earth
-      }
+      primary: '#059669', // Deep Emerald
+      secondary: '#34D399', // Emerald 400
+      background: '#ECFDF5', // Soft Sage
+      surface: '#FFFFFF',
+      text: '#1E293B', // Slate 800
     },
   },
   plugins: [],

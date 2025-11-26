@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 
@@ -48,58 +49,62 @@ export default function DashboardScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView
         className="flex-1 px-4 py-6"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View className="flex-row justify-between items-center mb-6">
+        <View className="flex-row justify-between items-center mb-8">
           <View>
-            <Text className="text-2xl font-bold text-gray-900">Dashboard</Text>
-            <Text className="text-gray-500">Welcome back, Farmer</Text>
+            <Text className="text-3xl font-bold text-text">Dashboard</Text>
+            <Text className="text-slate-500 font-medium">Welcome back, Farmer</Text>
           </View>
           <View className="bg-primary/10 p-2 rounded-full">
-            {/* Profile Icon Placeholder */}
-            <View className="w-8 h-8 bg-primary rounded-full items-center justify-center">
-              <Text className="text-white font-bold">F</Text>
+            <View className="w-10 h-10 bg-primary rounded-full items-center justify-center shadow-sm">
+              <Text className="text-white font-bold text-lg">F</Text>
             </View>
           </View>
         </View>
 
         {/* Quick Stats */}
-        <View className="flex-row gap-4 mb-6">
-          <View className="flex-1 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <Text className="text-gray-500 text-xs font-bold uppercase">Active Batches</Text>
-            <Text className="text-3xl font-bold text-gray-900 mt-1">{activeBatches}</Text>
-          </View>
-          <View className="flex-1 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <Text className="text-gray-500 text-xs font-bold uppercase">Total Birds</Text>
-            <Text className="text-3xl font-bold text-gray-900 mt-1">{totalBirds}</Text>
-          </View>
+        <View className="flex-row gap-4 mb-8">
+          <Card className="flex-1 bg-primary border-primary">
+            <Text className="text-emerald-100 text-xs font-bold uppercase tracking-wider">Active Batches</Text>
+            <Text className="text-4xl font-bold text-white mt-2">{activeBatches}</Text>
+          </Card>
+          <Card className="flex-1">
+            <Text className="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Birds</Text>
+            <Text className="text-4xl font-bold text-text mt-2">{totalBirds}</Text>
+          </Card>
         </View>
 
         {/* Actions */}
-        <Text className="text-lg font-bold text-gray-900 mb-4">Quick Actions</Text>
+        <Text className="text-xl font-bold text-text mb-4">Quick Actions</Text>
         <View className="gap-4 mb-8">
           <Button
             label="Log Daily Data"
             onPress={() => router.push('/(tabs)/farm')}
+            className="shadow-md"
           />
           <Button
             label="Order Feed"
             variant="secondary"
             onPress={() => router.push('/(tabs)/shop')}
+            textClassName="text-primary"
           />
         </View>
 
         {/* Alerts/Notifications */}
-        <Text className="text-lg font-bold text-gray-900 mb-4">Alerts</Text>
-        <View className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 mb-4">
-          <Text className="font-bold text-yellow-800 mb-1">Vaccination Due</Text>
-          <Text className="text-yellow-700 text-sm">Batch #24 needs Gumboro vaccine tomorrow.</Text>
-        </View>
+        <Text className="text-xl font-bold text-text mb-4">Alerts</Text>
+        <Card className="bg-yellow-50 border-yellow-100 mb-4">
+          <View className="flex-row items-center gap-3 mb-2">
+            <View className="w-2 h-2 rounded-full bg-yellow-500" />
+            <Text className="font-bold text-yellow-800 text-lg">Vaccination Due</Text>
+          </View>
+          <Text className="text-yellow-700 leading-relaxed">Batch #24 needs Gumboro vaccine tomorrow.</Text>
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 
+  FarmChick Design System 
+  Primary: Deep Emerald (#059669)
+  Background: Soft Sage (#ECFDF5)
+  Text: Slate (#1E293B)
+*/
+
+@layer base {
+    body {
+        @apply bg-gray-50 text-slate-900;
+    }
+}
+
+@layer components {
+    .card {
+        @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-4;
+    }
+
+    .btn-primary {
+        @apply bg-emerald-600 px-4 py-3 rounded-xl flex items-center justify-center active:bg-emerald-700;
+    }
+
+    .btn-secondary {
+        @apply bg-emerald-100 px-4 py-3 rounded-xl flex items-center justify-center active:bg-emerald-200;
+    }
+
+    .text-header {
+        @apply text-2xl font-bold text-slate-900;
+    }
+
+    .text-label {
+        @apply text-sm font-medium text-slate-500 uppercase tracking-wider;
+    }
+}
