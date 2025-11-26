@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -80,8 +79,6 @@ export default function ProfileScreen() {
         const { error } = await supabase.auth.signOut();
         if (error) {
             Alert.alert('Error', error.message);
-        } else {
-            router.replace('/');
         }
     }
 

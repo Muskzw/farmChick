@@ -40,10 +40,10 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const inBatchGroup = segments[0] === 'batch';
 
     if (!session && (inTabsGroup || inBatchGroup)) {
-      // Redirect to the landing page if not signed in and trying to access protected routes
-      router.replace('/');
+      // Redirect to the login page if not signed in
+      router.replace('/(auth)/login');
     } else if (session && (inAuthGroup || (segments[0] as string) === 'index')) {
-      // Redirect to the dashboard if signed in and trying to access auth routes or landing page
+      // Redirect to the dashboard if signed in
       router.replace('/(tabs)');
     }
   }, [session, loading, segments]);
