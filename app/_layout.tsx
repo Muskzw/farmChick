@@ -24,6 +24,33 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+import { useRouter, useSegments } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
+
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { session, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inTabsGroup = segments[0] === '(tabs)';
+    const inBatchGroup = segments[0] === 'batch';
+
+    if (!session && (inTabsGroup || inBatchGroup)) {
+      // Redirect to the landing page if not signed in and trying to access protected routes
+      router.replace('/');
+    } else if (session && (inAuthGroup || (segments[0] as string) === 'index')) {
+      // Redirect to the dashboard if signed in and trying to access auth routes or landing page
+      router.replace('/(tabs)');
+    }
+  }, [session, loading, segments]);
+
+  return <>{children}</>;
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
@@ -48,13 +75,17 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <AuthGuard>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </AuthGuard>
     </AuthProvider>
   );
 }
