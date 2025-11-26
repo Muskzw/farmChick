@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, RefreshControl, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { supabase } from '../../lib/supabase';
 
