@@ -1,8 +1,10 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
+import GlassCard from '../../components/GlassCard';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 
@@ -55,73 +57,84 @@ export default function FarmScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView
-                className="flex-1 px-4 py-6"
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-            >
-                <Text className="text-2xl font-bold text-gray-900 mb-6">My Batches</Text>
+        <View className="flex-1 bg-background-dark">
+            <LinearGradient
+                colors={['#064E3B', '#020617']}
+                className="absolute inset-0"
+            />
+            <SafeAreaView className="flex-1">
+                <ScrollView
+                    className="flex-1 px-4 py-6"
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />
+                    }
+                >
+                    <Text className="text-3xl font-bold text-white mb-6 tracking-tight">My Batches</Text>
 
-                {loading && !refreshing ? (
-                    <ActivityIndicator size="large" color="#2E7D32" />
-                ) : batches.length === 0 ? (
-                    <View className="items-center justify-center py-10">
-                        <Text className="text-gray-500 mb-4">No batches found.</Text>
-                        <Button label="Start Your First Batch" onPress={() => router.push('/batch/new')} />
-                    </View>
-                ) : (
-                    batches.map((batch) => (
-                        <View key={batch.id} className={`bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-4 ${batch.status === 'planning' ? 'opacity-75' : ''}`}>
-                            <View className="flex-row justify-between items-start mb-2">
-                                <View>
-                                    <Text className="text-lg font-bold text-gray-900">{batch.name}</Text>
-                                    <Text className="text-gray-500">{batch.breed} • {new Date(batch.start_date).toLocaleDateString()}</Text>
-                                </View>
-                                <View className={`px-2 py-1 rounded ${batch.status === 'active' ? 'bg-green-100' : batch.status === 'planning' ? 'bg-yellow-100' : 'bg-gray-100'}`}>
-                                    <Text className={`text-xs font-bold ${batch.status === 'active' ? 'text-green-800' : batch.status === 'planning' ? 'text-yellow-800' : 'text-gray-800'}`}>
-                                        {batch.status.toUpperCase()}
-                                    </Text>
-                                </View>
-                            </View>
-
-                            {batch.status === 'active' && (
-                                <>
-                                    <View className="h-2 bg-gray-100 rounded-full mt-2 mb-4 overflow-hidden">
-                                        <View className="h-full bg-primary w-1/3" />
-                                    </View>
-
-                                    <View className="flex-row justify-between border-t border-gray-100 pt-4">
-                                        <View>
-                                            <Text className="text-gray-500 text-xs">Birds</Text>
-                                            <Text className="font-bold text-gray-900">{batch.initial_count}</Text>
-                                        </View>
-                                        <View>
-                                            <Text className="text-gray-500 text-xs">Avg Weight</Text>
-                                            <Text className="font-bold text-gray-900">--</Text>
-                                        </View>
-                                        <View>
-                                            <Text className="text-gray-500 text-xs">FCR</Text>
-                                            <Text className="font-bold text-gray-900">--</Text>
-                                        </View>
-                                    </View>
-
-                                    <Button label="View Details" variant="outline" className="mt-4 py-2" onPress={() => router.push(`/batch/${batch.id}/log`)} />
-                                </>
-                            )}
-
-                            {batch.status === 'planning' && (
-                                <Button label="Pre-arrival Checklist" variant="secondary" className="mt-4 py-2" onPress={() => router.push(`/batch/${batch.id}/checklist`)} />
-                            )}
+                    {loading && !refreshing ? (
+                        <ActivityIndicator size="large" color="#10B981" />
+                    ) : batches.length === 0 ? (
+                        <View className="items-center justify-center py-10">
+                            <Text className="text-text-muted mb-4 text-lg">No batches found.</Text>
+                            <Button label="Start Your First Batch" onPress={() => router.push('/batch/new')} />
                         </View>
-                    ))
-                )}
+                    ) : (
+                        batches.map((batch) => (
+                            <GlassCard
+                                key={batch.id}
+                                variant="default"
+                                intensity="medium"
+                                className={`mb-4 border-white/5 ${batch.status === 'planning' ? 'opacity-75' : ''}`}
+                            >
+                                <View className="flex-row justify-between items-start mb-2">
+                                    <View>
+                                        <Text className="text-xl font-bold text-white">{batch.name}</Text>
+                                        <Text className="text-text-muted">{batch.breed} • {new Date(batch.start_date).toLocaleDateString()}</Text>
+                                    </View>
+                                    <View className={`px-3 py-1 rounded-full ${batch.status === 'active' ? 'bg-primary-500/20 border border-primary-500/50' : batch.status === 'planning' ? 'bg-secondary-500/20 border border-secondary-500/50' : 'bg-slate-700/50 border border-slate-600'}`}>
+                                        <Text className={`text-xs font-bold ${batch.status === 'active' ? 'text-primary-400' : batch.status === 'planning' ? 'text-secondary-400' : 'text-slate-400'}`}>
+                                            {batch.status.toUpperCase()}
+                                        </Text>
+                                    </View>
+                                </View>
 
-                {batches.length > 0 && (
-                    <Button label="+ Start New Batch" className="mt-4 mb-8" onPress={() => router.push('/batch/new')} />
-                )}
-            </ScrollView>
-        </SafeAreaView>
+                                {batch.status === 'active' && (
+                                    <>
+                                        <View className="h-2 bg-slate-700 rounded-full mt-2 mb-4 overflow-hidden">
+                                            <View className="h-full bg-primary-500 w-1/3" />
+                                        </View>
+
+                                        <View className="flex-row justify-between border-t border-white/10 pt-4">
+                                            <View>
+                                                <Text className="text-text-muted text-xs uppercase tracking-wider">Birds</Text>
+                                                <Text className="font-bold text-white text-lg">{batch.initial_count}</Text>
+                                            </View>
+                                            <View>
+                                                <Text className="text-text-muted text-xs uppercase tracking-wider">Avg Weight</Text>
+                                                <Text className="font-bold text-white text-lg">--</Text>
+                                            </View>
+                                            <View>
+                                                <Text className="text-text-muted text-xs uppercase tracking-wider">FCR</Text>
+                                                <Text className="font-bold text-white text-lg">--</Text>
+                                            </View>
+                                        </View>
+
+                                        <Button label="View Details" variant="outline" className="mt-4 py-2 border-white/20" textClassName="text-white" onPress={() => router.push(`/batch/${batch.id}/log`)} />
+                                    </>
+                                )}
+
+                                {batch.status === 'planning' && (
+                                    <Button label="Pre-arrival Checklist" variant="secondary" className="mt-4 py-2" onPress={() => router.push(`/batch/${batch.id}/checklist`)} />
+                                )}
+                            </GlassCard>
+                        ))
+                    )}
+
+                    {batches.length > 0 && (
+                        <Button label="+ Start New Batch" className="mt-4 mb-8 shadow-lg shadow-primary-900/50" onPress={() => router.push('/batch/new')} />
+                    )}
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }

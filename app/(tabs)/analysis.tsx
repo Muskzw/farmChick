@@ -1,7 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, Text, View } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import GlassCard from '../../components/GlassCard';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 
@@ -52,14 +54,9 @@ export default function AnalysisScreen() {
             if (logsError) throw logsError;
 
             if (logs && logs.length > 0) {
-                // Process data for chart
-                // Filter out logs with no weight recorded to avoid 0 drops if not intended, 
-                // or keep them if 0 means something. For growth, usually we want actual measurements.
                 const validLogs = logs.filter(log => log.weight > 0);
 
                 if (validLogs.length > 0) {
-                    // Take last 7 entries if too many, to keep chart readable, or just all
-                    // Let's take up to 10 recent points
                     const recentLogs = validLogs.slice(-10);
 
                     const labels = recentLogs.map(log => {
@@ -84,64 +81,70 @@ export default function AnalysisScreen() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView className="flex-1 px-4 py-6">
-                <Text className="text-2xl font-bold text-gray-900 mb-6">Analysis</Text>
+        <View className="flex-1 bg-background-dark">
+            <LinearGradient
+                colors={['#064E3B', '#020617']}
+                className="absolute inset-0"
+            />
+            <SafeAreaView className="flex-1">
+                <ScrollView className="flex-1 px-4 py-6">
+                    <Text className="text-3xl font-bold text-white mb-6 tracking-tight">Analysis</Text>
 
-                <View className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-                    <Text className="text-lg font-bold text-gray-900 mb-2">Estimated Profit</Text>
-                    <Text className="text-4xl font-bold text-primary">$4,250</Text>
-                    <Text className="text-gray-500">Based on current mortality and market price.</Text>
-                </View>
+                    <GlassCard variant="default" intensity="medium" className="p-6 mb-6 border-primary-500/30">
+                        <Text className="text-lg font-bold text-white mb-2">Estimated Profit</Text>
+                        <Text className="text-4xl font-bold text-primary-400">$4,250</Text>
+                        <Text className="text-slate-300 mt-1">Based on current mortality and market price.</Text>
+                    </GlassCard>
 
-                <View className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-                    <Text className="text-lg font-bold text-gray-900 mb-4">
-                        Growth Chart {activeBatchName ? `(${activeBatchName})` : ''}
-                    </Text>
+                    <GlassCard variant="dark" intensity="high" className="p-6 mb-6 border-white/10">
+                        <Text className="text-lg font-bold text-white mb-4">
+                            Growth Chart {activeBatchName ? `(${activeBatchName})` : ''}
+                        </Text>
 
-                    {loading ? (
-                        <View className="h-56 items-center justify-center">
-                            <ActivityIndicator size="large" color="#2E7D32" />
-                        </View>
-                    ) : chartData ? (
-                        <View className="items-center overflow-hidden">
-                            <LineChart
-                                data={chartData}
-                                width={Dimensions.get('window').width - 80} // Container padding
-                                height={220}
-                                yAxisSuffix="g"
-                                chartConfig={{
-                                    backgroundColor: "#ffffff",
-                                    backgroundGradientFrom: "#ffffff",
-                                    backgroundGradientTo: "#ffffff",
-                                    decimalPlaces: 0,
-                                    color: (opacity = 1) => `rgba(46, 125, 50, ${opacity})`,
-                                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                                    style: {
+                        {loading ? (
+                            <View className="h-56 items-center justify-center">
+                                <ActivityIndicator size="large" color="#10B981" />
+                            </View>
+                        ) : chartData ? (
+                            <View className="items-center overflow-hidden rounded-2xl">
+                                <LineChart
+                                    data={chartData}
+                                    width={Dimensions.get('window').width - 80} // Container padding
+                                    height={220}
+                                    yAxisSuffix="g"
+                                    chartConfig={{
+                                        backgroundColor: "transparent",
+                                        backgroundGradientFrom: "#020617",
+                                        backgroundGradientTo: "#064E3B",
+                                        decimalPlaces: 0,
+                                        color: (opacity = 1) => `rgba(16, 185, 129, ${opacity})`,
+                                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                        style: {
+                                            borderRadius: 16
+                                        },
+                                        propsForDots: {
+                                            r: "6",
+                                            strokeWidth: "2",
+                                            stroke: "#10B981"
+                                        }
+                                    }}
+                                    bezier
+                                    style={{
+                                        marginVertical: 8,
                                         borderRadius: 16
-                                    },
-                                    propsForDots: {
-                                        r: "6",
-                                        strokeWidth: "2",
-                                        stroke: "#2E7D32"
-                                    }
-                                }}
-                                bezier
-                                style={{
-                                    marginVertical: 8,
-                                    borderRadius: 16
-                                }}
-                            />
-                        </View>
-                    ) : (
-                        <View className="h-40 bg-gray-50 rounded flex items-center justify-center border border-dashed border-gray-300">
-                            <Text className="text-gray-400 text-center px-4">
-                                No weight data available for active batch. Start logging daily weights!
-                            </Text>
-                        </View>
-                    )}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                                    }}
+                                />
+                            </View>
+                        ) : (
+                            <View className="h-40 bg-white/5 rounded-xl flex items-center justify-center border border-dashed border-white/20">
+                                <Text className="text-slate-400 text-center px-4">
+                                    No weight data available for active batch. Start logging daily weights!
+                                </Text>
+                            </View>
+                        )}
+                    </GlassCard>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }

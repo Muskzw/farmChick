@@ -1,7 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
+import GlassCard from '../../components/GlassCard';
 import { Input } from '../../components/Input';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -83,40 +85,49 @@ export default function ProfileScreen() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView className="flex-1 px-4 py-6">
-                <Text className="text-2xl font-bold text-gray-900 mb-6">My Profile</Text>
+        <View className="flex-1 bg-background-dark">
+            <LinearGradient
+                colors={['#064E3B', '#020617']}
+                className="absolute inset-0"
+            />
+            <SafeAreaView className="flex-1">
+                <ScrollView className="flex-1 px-4 py-6">
+                    <Text className="text-3xl font-bold text-white mb-6 tracking-tight">My Profile</Text>
 
-                <View className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-                    <Input
-                        label="Full Name"
-                        value={fullName}
-                        onChangeText={setFullName}
-                        placeholder="John Doe"
-                    />
-                    <Input
-                        label="Farm Name"
-                        value={farmName}
-                        onChangeText={setFarmName}
-                        placeholder="Sunny Side Farm"
-                    />
+                    <GlassCard variant="dark" intensity="high" className="p-6 mb-6 border-white/10">
+                        <Input
+                            label="Full Name"
+                            value={fullName}
+                            onChangeText={setFullName}
+                            placeholder="John Doe"
+                            icon="person-outline"
+                        />
+                        <Input
+                            label="Farm Name"
+                            value={farmName}
+                            onChangeText={setFarmName}
+                            placeholder="Sunny Side Farm"
+                            icon="leaf-outline"
+                        />
+
+                        <Button
+                            label={saving ? "Saving..." : "Save Changes"}
+                            onPress={updateProfile}
+                            disabled={loading || saving}
+                            className="mt-4"
+                            variant="primary"
+                        />
+                    </GlassCard>
 
                     <Button
-                        label={saving ? "Saving..." : "Save Changes"}
-                        onPress={updateProfile}
-                        disabled={loading || saving}
-                        className="mt-2"
+                        label="Sign Out"
+                        variant="ghost"
+                        onPress={signOut}
+                        className="border border-red-500/50 bg-red-500/10"
+                        textClassName="text-red-400"
                     />
-                </View>
-
-                <Button
-                    label="Sign Out"
-                    variant="outline"
-                    onPress={signOut}
-                    className="border-red-500"
-                    textClassName="text-red-500"
-                />
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }
